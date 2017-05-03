@@ -137,6 +137,8 @@
 // Write an algorithm to remove all numbers less than five from the array.
 // You shouldn't use the .filter method here; try to write the algorithm from scratch.
 
+// Time Complexity is O(n) because it is directly proportional to the size of the 
+// input (length of the array). 
 function customFilterRecursive(arr) {
   if (arr.length === 0) {
     // Base case
@@ -155,6 +157,8 @@ function customFilterRecursive(arr) {
 
 //console.log(customFilterRecursive([1, 2, 4, 7, 8, 9, 13, 56, 2, 3]));
 
+// Time Complexity is O(n) because it is directly proportional to the size of the 
+// input (length of the array). 
 function customFilterIterative(arr) {
   let filtered = [];
   for (let i=0; i<arr.length; i++) {
@@ -184,6 +188,53 @@ function mergeAndSort(arr1, arr2) {
   });
 }
 
+// Time complexity is O(n)?????????
+// Vary the size of the input (array) to determine the order of growth in the function's 
+// run-time (Big O Notation)
+// With an array length of...
+// 1 --> 3
+// 2 --> 6
+// 3 --> 10
+// 4 --> 15
+// 5 --> 21
+// 6 --> 28
+// 7 --> 36
+// 8 --> 45
+function mergeAndSortRecursive(arr1, arr2) {
+  let ticks = 0;
+  let mergedArr = [...arr1, ...arr2];
+
+  function recursiveSort(arr) {
+    ticks++;
+    if (arr.length === 0) {
+      // Base case
+      return [];
+    }
+
+    // Find the lowest number in the array
+    let lowest;
+    let index;
+    for (let i=0; i<arr.length; i++) {
+      ticks++;
+      if (typeof lowest === 'undefined' || arr[i] < lowest) {
+        lowest = arr[i];
+        index = i;
+      }
+    }
+
+    // slice the arr and exclude the lowest number
+    const modifiedArr = index === 0 ? arr.slice(1) : arr.slice(0, index).concat(arr.slice(index+1));
+  
+    // return the lowest number in an array and recursively call the function with the sliced arr  
+    return [lowest, ...recursiveSort(modifiedArr)];
+  }
+
+  // Invoke recursive sort and return its return value
+  const result = recursiveSort(mergedArr);
+  return {result, ticks};
+}
+
+console.log(mergeAndSortRecursive([1], []));
 // console.log(mergeAndSort([1, 3, 6, 8, 11], [2, 3, 5, 89, 8, 9, 4, 2, 10]));
 
 /*
@@ -191,22 +242,37 @@ Given an array of numbers, write an algorithm to find out the products of every 
 except the one at that index. For example, if the input was [1, 3, 9, 4], the output 
 should be [108, 36, 12, 27] (i.e. [3*9*4, 1*9*4, 1*3*4, 1*3*9]).
 */
-
+// Time Complexity is Exponential O(2^n) because we have a loop nested within a loop
+// For an array of length...
+// 1 --> 2
+// 2 --> 6
+// 3 --> 12
+// 4 --> 20
+// 5 --> 30
+// 6 --> 42
+// 7 --> 56
 function producerIterative(arr) {
+  let ticks = 0;
   let newArray = [];
   for (let i=0; i<arr.length; i++) {
+    ticks++;
     let currentProduct = 1; 
     for (let j=0; j<arr.length; j++) {
+      ticks++;
       if (i !== j) {
         currentProduct *= arr[j];
       }
     }
     newArray.push(currentProduct);
   }
-  return newArray;
+  return {result: newArray, ticks};
 }
 
+// console.log(producerIterative([1, 3, 3, 7, 9, 2, 3]));
+
 // Recursive producer !!!
+// Time Complexity is O(n) because it is directly proportional to the size of the 
+// input (length of the array). 
 function producer(arr, idx=0) {
   if (arr.length === idx) {
     return [];
@@ -223,4 +289,4 @@ function producer(arr, idx=0) {
   return [product, ...producer(arr, idx+1)];
 }
 
-console.log(producer([1, 3, 6, 8, 2]));
+//console.log(producer([1, 3, 6, 8, 2]));
