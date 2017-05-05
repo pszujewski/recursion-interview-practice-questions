@@ -1,134 +1,135 @@
 // // The world's worst memory allocator
-// class Memory {
+class Memory {
 
-//   constructor() {
-//     this.memory = new Float64Array(1024);
-//     this.head = 0;
-//   }
+  constructor() {
+    this.memory = new Float64Array(1024);
+    this.head = 0;
+  }
 
-//   allocate(size) {
-//     if (this.head + size > this.memory.length) {
-//         return null;
-//     }
-//     let start = this.head;
-//     this.head += size;
-//     return start;
-//   }
+  allocate(size) {
+    if (this.head + size > this.memory.length) {
+        return null;
+    }
+    let start = this.head;
+    this.head += size;
+    return start;
+  }
 
-//   free(ptr) {
-//     console.log('Memory free');
-//   }
+  free(ptr) {
+    console.log('Memory free');
+  }
 
-//   copy(to, from, size) {
-//     if (from === to) {
-//       return;
-//     }
-//     else if (from > to) {
-//       // Iterate forwards
-//       for (var i=0; i<size; i++) {
-//         this.set(to + i, this.get(from + i));
-//       }
-//     }
-//     else {
-//       // Iterate backwards
-//       for (var i=size - 1; i>=0; i--) {
-//         this.set(to + i, this.get(from + i));
-//       }
-//     }
-//   }
+  copy(to, from, size) {
+    if (from === to) {
+      return;
+    }
+    else if (from > to) {
+      // Iterate forwards
+      for (var i=0; i<size; i++) {
+        this.set(to + i, this.get(from + i));
+      }
+    }
+    else {
+      // Iterate backwards
+      for (var i=size - 1; i>=0; i--) {
+        this.set(to + i, this.get(from + i));
+      }
+    }
+  }
 
-//   get(ptr) {
-//     return this.memory[ptr];
-//   }
+  get(ptr) {
+    return this.memory[ptr];
+  }
 
-//   set(ptr, value) {
-//     this.memory[ptr] = value;
-//   }
+  set(ptr, value) {
+    this.memory[ptr] = value;
+  }
 
-// }
+}
 
-// // ================ Custom Array Class ================ //
+// ================ Custom Array Class ================ //
 
-// const memory = new Memory();
-// console.log(memory);
+const memory = new Memory();
+console.log(memory);
 
-// class CustomArray {
+class CustomArray {
 
-//   constructor() {
-//     this.SIZE_RATIO = 3;
-//     this.length = 0;
-//     this._capacity = 0;
-//     this.ptr = memory.allocate(this.length);
-//   }
+  constructor() {
+    this.SIZE_RATIO = 3;
+    this.length = 0;
+    this._capacity = 0;
+    this.ptr = memory.allocate(this.length);
+  }
 
-//   push(value) {
-//    if (this.length >= this._capacity) {
-//       this._resize((this.length + 1) * this.SIZE_RATIO);
-//    }
-//     memory.set(this.ptr + this.length, value);
-//     this.length++;
-//   }
+  push(value) {
+   if (this.length >= this._capacity) {
+      this._resize((this._capacity + 1) * this.SIZE_RATIO);
+   }
+    memory.set(this.ptr + this.length, value);
+    this.length++;
+  }
 
-//   _resize(size) {
-//     const oldPtr = this.ptr;
-//     this.ptr = memory.allocate(size);
-//     if (this.ptr === null) {
-//         throw new Error('Out of memory');
-//     }
-//     memory.copy(this.ptr, oldPtr, this.length);
-//     memory.free(oldPtr);
-//   }
+  _resize(size) {
+    const oldPtr = this.ptr;
+    this.ptr = memory.allocate(size);
+    if (this.ptr === null) {
+        throw new Error('Out of memory');
+    }
+    this._capacity = size;
+    memory.copy(this.ptr, oldPtr, this.length);
+    memory.free(oldPtr);
+  }
 
-//   get(index) {
-//     if (index < 0 || index >= this.length) {
-//         throw new Error('Index error');
-//     }
-//     return memory.get(this.ptr + index);
-//   }
+  get(index) {
+    if (index < 0 || index >= this.length) {
+        throw new Error('Index error');
+    }
+    return memory.get(this.ptr + index);
+  }
 
-//   pop() {
-//     if (this.length == 0) {
-//         throw new Error('Index error');
-//     }
-//     const value = memory.get(this.ptr + this.length - 1);
-//     this.length--;
-//     return value;
-//   }
+  pop() {
+    if (this.length == 0) {
+        throw new Error('Index error');
+    }
+    const value = memory.get(this.ptr + this.length - 1);
+    this.length--;
+    return value;
+  }
 
-//   insert(index, value) {
-//     if (index < 0 || index >= this.length) {
-//         throw new Error('Index error');
-//     }
+  insert(index, value) {
+    if (index < 0 || index >= this.length) {
+        throw new Error('Index error');
+    }
 
-//     if (this.length >= this._capacity) {
-//         this._resize((this.length + 1) * this.SIZE_RATIO);
-//     }
+    if (this.length >= this._capacity) {
+        this._resize((this._capacity + 1) * this.SIZE_RATIO);
+    }
 
-//     memory.copy(this.ptr + index + 1, this.ptr + index, this.length - index);
-//     memory.set(this.ptr + index, value);
-//     this.length++;
-//   }
+    memory.copy(this.ptr + index + 1, this.ptr + index, this.length - index);
+    memory.set(this.ptr + index, value);
+    this.length++;
+  }
 
-//   remove(index) {
-//     if (index < 0 || index >= this.length) {
-//         throw new Error('Index error');
-//     }
-//     memory.copy(this.ptr + index, this.ptr + index + 1, this.length - index - 1);
-//     this.length--;
-//   }
+  remove(index) {
+    if (index < 0 || index >= this.length) {
+        throw new Error('Index error');
+    }
+    memory.copy(this.ptr + index, this.ptr + index + 1, this.length - index - 1);
+    this.length--;
+  }
 
-// }
+}
 
-// const array = new CustomArray();
-// array.push(2);
-// array.push(42);
-// array.push(35);
-// array.push(8);
-// array.push(9);
-// array.push(12);
-// array.push(31);
-// console.log(array.get(2));
-// console.log(array);
+const array = new CustomArray();
+array.push(2);
+array.push(42);
+array.push(35);
+array.push(8);
+array.push(9);
+array.push(12);
+array.push(31);
+console.log(array.get(2));
+console.log(array);
 
 // Algorithm interview questions
 // Interview Questions
@@ -188,7 +189,7 @@ function mergeAndSort(arr1, arr2) {
   });
 }
 
-// Time complexity is O(n)?????????
+// Time complexity is O(n^2)/2 ---> so O(n^2)
 // Vary the size of the input (array) to determine the order of growth in the function's 
 // run-time (Big O Notation)
 // With an array length of...
@@ -200,6 +201,11 @@ function mergeAndSort(arr1, arr2) {
 // 6 --> 28
 // 7 --> 36
 // 8 --> 45
+// 9 --> 55
+// Sorting methods are always worse than linear. There is a complexity class that's 
+// been decided for any sort. 
+// O(n log n) --> For every value you do something with log n --> where you split the input by half. 
+// The 'log' in CS is log in base 2 which practically speaking is just split it in half... 
 function mergeAndSortRecursive(arr1, arr2) {
   let ticks = 0;
   let mergedArr = [...arr1, ...arr2];
@@ -234,7 +240,7 @@ function mergeAndSortRecursive(arr1, arr2) {
   return {result, ticks};
 }
 
-console.log(mergeAndSortRecursive([1], []));
+//console.log(mergeAndSortRecursive([1], []));
 // console.log(mergeAndSort([1, 3, 6, 8, 11], [2, 3, 5, 89, 8, 9, 4, 2, 10]));
 
 /*
@@ -272,7 +278,7 @@ function producerIterative(arr) {
 
 // Recursive producer !!!
 // Time Complexity is O(n) because it is directly proportional to the size of the 
-// input (length of the array). 
+// input (length of the array). --> NOT O(N) Because of reduce below
 function producer(arr, idx=0) {
   if (arr.length === idx) {
     return [];
