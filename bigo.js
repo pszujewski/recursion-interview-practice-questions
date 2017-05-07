@@ -731,3 +731,174 @@ as shown below with proper indentation to show the hierarchy.
 
 // Iterative versions
 
+//Analyzing the Big O of 
+//Iterative versions of https://gist.github.com/tparveen/edddf988ec68ef6bb74cff9d1284d09d
+
+/*=================================================================
+Exercise 1 - Counting Sheep
+Big O: O(n) linear complexity
+As the input size grows, so does the runtime. If the sheepcount is 1,
+you have to visit the input 1 time, if the sheepcount is 100, you have to
+visit the input 100 times. If the input is n, you have to visit it n times
+*/
+
+function countSheepLoop(num){
+    let counter = 0;
+    for(let i=num; i>0; i--){
+        console.log(`counting sheeps ${i}`);
+        counter++;
+    }
+    console.log(`countSheepLoop counter: ${counter}`);
+}
+countSheepLoop(10);
+
+/*=================================================================
+Exercise 2: Double Array Elements
+Big O: O(n) - linear
+As the size of the array grows so would the run time. To double each
+element, you have to visit each element in the array
+*/
+
+function double_all(arr) {
+    let ret = Array(arr.length);
+    let counter = 0;
+    for (let i = 0; i < arr.length; ++i) {
+        ret[i] = arr[i] * 2;
+        counter++;
+    }
+    console.log(`double_all counter: ${counter}`);
+    return ret;
+}
+let arr = [10,4,5,2,1];
+console.log(double_all(arr));
+
+/*=================================================================
+Exercise 3: String reversal - using tail Recursion
+Big O: O(n) linear complexity
+The run time depends on how long the string it. Each character in the string 
+is visited once
+*/
+function reverse_tail(str) {
+    let accumulator = "";
+    let counter = 0;
+    while (str !== "") {
+    	accumulator = str[0] + accumulator;
+    	str = str.slice(1);
+        counter++;
+    }
+    console.log(`reverse_tail counter: ${counter}`);
+    return accumulator;
+}
+console.log(reverse_tail('tauhida'));
+console.log(reverse_tail('tauhidaparveen'));
+
+/*=================================================================
+Exercise 4: Calculates the nth triangular number.
+Big O: O(n) linear complexity
+For this you have to consider all the input up to the nth number.
+The larger the input is, the more numbers you have to add. Therefore,
+the runtime is proportional to the input size.
+*/
+
+function triangle(n) {
+    let tot = 0;
+    let counter = 0;
+    for (var i = 1; i <= n; ++i) {
+	    tot += n;
+        counter++;
+    }
+    console.log(`triangle counter: ${counter}`);
+    return tot;
+}
+
+console.log(triangle(3));
+console.log(triangle(6));
+
+/*=================================================================
+Exercise 5: String splitter
+Big O: O(n) linear complexity
+You have to go though every character in the string to identify how to split
+increasing the input size will increase the run time
+*/
+
+function split(str, sep) {
+    let ret = [];
+    let counter = 0;
+    while (true) {
+        let idx = str.indexOf(sep);
+        if (idx == -1) 
+            break;
+	    ret.push(str.slice(0, idx))
+	    str = str.slice(idx + sep.length);
+        counter++;
+    }
+    ret.push(str);
+    console.log(`split counter: ${counter}`);
+    return ret;
+}
+console.log(split('1/27/2017', '/'));
+/*======================================================================
+Exercise 6 - Binary Representation
+Big O: O(log(n)) - Logarithmic
+With each operation, you are dividing hte input by half. How many times would you 
+loop before you break. If you increase the input size, how does that affect the runtime
+as you divide the input size by half
+*/
+
+function convertToBinaryIter(num){
+    let binary = '';
+    let counter = 0;
+    while(num>0){
+        let rem = Math.floor(num%2);
+        binary = rem + binary;
+        num = Math.floor(num/2);
+        counter++;
+    }
+    console.log(`convertToBinaryIter counter: ${counter}`);
+    return binary;
+}
+console.log(convertToBinaryIter(124)); //1111100
+
+/*====================================================================
+Exercise 8 - Factorial
+Big O: O(n) linear complexity
+You have to consider every number up to the number whose factorial you are
+trying to find. If that number is a large number your number of operation increases
+*/
+
+function factorialIterative(number){
+    let counter = 0;
+    let fact = 1;
+    for (let i = 1; i <= number; i++){
+        fact *= i;
+        counter++;
+    }
+    console.log(`factorialIterative counter: ${counter}`);
+    return fact;
+}
+console.log(factorialIterative(5));
+
+/*=================================================================================
+Exercise 9 - Fibonacci
+Big O: O(n) linear complexity
+You have to consider every number up to the number whose Fibonacci sequence you are
+trying to find. If that number is a large number your number of operation increases
+*/
+
+function fibonacciIterative(number){
+    let num1 = 1;
+    let num2 = 0;
+    let fib = null;
+    let counter = 0;
+    while(number > 0){
+        fib = num1;
+        num1 = num1+num2;
+        num2 = fib;
+        number--;
+        counter++;
+    }
+    console.log(`fibonacciIterative counter: ${counter}`);
+    return num2;
+
+}
+console.log(fibonacciIterative(3));
