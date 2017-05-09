@@ -101,6 +101,9 @@ list.push('9');
 list.insert(4, 'hi');
 list.pop();
 list.remove(4);
+console.log(
+  JSON.stringify(list, null, 2)
+);
 
 // ========= Helper functions ======= // 
 
